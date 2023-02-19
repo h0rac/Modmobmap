@@ -309,6 +309,13 @@ $ python modmobmap.py -m grgsm -b GSM-R,GSM900
 Using Modmobmap with srsRAN
 ------------------------------
 
+Supported drivers:
+
+* uhd
+* bladerf
+* soapy
+
+
 Modmodmap can be used with `srsRAN` to retrieve LTE cells with a Software-Defined Radio device compatible with UHD, and Soapy drivers like the RTL-SDR.
 
 Before running the engine, make sure all dependencies are installed. You can refer to the installation script to install all appropriate dependencies. Also make sure that all submodules are pulled from the repository:
@@ -317,48 +324,80 @@ Before running the engine, make sure all dependencies are installed. You can ref
 git submodule update --init --recursive
 ```
 
-To use this feature, please issue the following command:
+
+To launch the tool with USRP, or bladeRF, you can choose or not to specify the driver as follows:
 
 ```
-$ sudo python modmobmap.py -m srslte_pss -b 28 -g 'soapy:id=1' # you need to precise the driver, and id of the device that way                                                                                                          
+$ python3 modmobmap.py -m srslte_pss -b 28 -g 'driver=usrp' 
+```
 
-[INFO] [UHD] linux; GNU C++ version 9.2.1 20191008; Boost_106700; UHD_4.0.0.0-531-g5fb585c3
-[INFO] [LOGGING] Fastpath logging disabled at runtime.
+With Soapy, use this format of command instead precising the `id` of the device to avoid picking a random device (e.g, sound device...):
+```
+python3 modmobmap.py -m srslte_pss -b 28 -g 'soapy:id=1'
+Active RF plugins: libsrsran_rf_uhd.so libsrsran_rf_soapy.so libsrsran_rf_blade.so libsrsran_rf_zmq.so
+Inactive RF plugins: 
+Opening RF device...
+Supported RF device list: UHD soapy bladeRF zmq file
+[INFO] [UHD] linux; GNU C++ version 9.2.1 20200304; Boost_107100; UHD_3.15.0.0-2build5
+Found Rafael Micro R820T tuner
 [...]
-
-Found Rafael Micro R820T tuner
-Found Rafael Micro R820T tuner
-[INFO] Using format CF32.
-
-[+] New cell detected [CellID/PCI-DL_freq  (2-9383)]
+Soapy has found device #1: available=Yes, driver=rtlsdr, label=Generic RTL2832U OEM :: 00000001, manufacturer=Realtek, product=RTL2838UHIDIR, rtl=0, serial=00000001, tuner=Rafael Micro R820T, 
+Selecting Soapy device: 1
+[...]
+[+] New cell detected [CellID/PCI-DL_freq  (447-9230)]
  Network type=4G
  PLMN=-1
- Downlink EARFCN=9383
-[+] New cell detected [CellID/PCI-DL_freq  (95-9461)]
+ Band=28
+ Downlink EARFCN=9230
+[ 21/449]: EARFCN 9231 Freq. 760.10 MHz looking for PSS.
+[+] New cell detected [CellID/PCI-DL_freq  (303-9231)]
  Network type=4G
  PLMN=-1
- Downlink EARFCN=9461
-[+] New cell detected [CellID/PCI-DL_freq  (259-9591)]
+ Band=28
+ Downlink EARFCN=9231
+[ 22/449]: EARFCN 9232 Freq. 760.20 MHz looking for PSS.
+[+] New cell detected [CellID/PCI-DL_freq  (0-9233)]
  Network type=4G
  PLMN=-1
- Downlink EARFCN=9591
-[+] New cell detected [CellID/PCI-DL_freq  (259-9592)]
+ Band=28
+ Downlink EARFCN=9233
+[ 24/449]: EARFCN 9234 Freq. 760.40 MHz looking for PSS
+...
+Found CELL ID 105. 25 PRB, 2 ports
+[+] New cell detected [CellID/PCI-DL_freq  (105-9235)]
  Network type=4G
  PLMN=-1
- Downlink EARFCN=9592
-[+] New cell detected [CellID/PCI-DL_freq  (1-9593)]
- Network type=4G
- PLMN=-1
- Downlink EARFCN=9593
-[+] New cell detected [CellID/PCI-DL_freq  (1-9594)]
- Network type=4G
- PLMN=-1
- Downlink EARFCN=9594
+ Band=28
+ Downlink EARFCN=9235
 [...]
 ^C[+] Cells save as cells_1595446203.json
 ```
 
 The `g` parameters is not mandatory and is used mainly to select the right device to scan the Synchronization Signals.
+
+To find the right device with Soapy, you can type the following command:
+
+```
+######################################################
+##     Soapy SDR -- the SDR abstraction library     ##
+######################################################
+
+[INFO] [UHD] linux; GNU C++ version 9.2.1 20200304; Boost_107100; UHD_3.15.0.0-2build5
+Found device 0
+  driver = SpectranV6
+  label = SpectranV6 RTSA HTTP Stream
+  manufacturer = HB9FXQ
+  product = SpectranV6 RTSA HTTP Stream
+  serial = SPECTRAN-V6-00000000000
+
+Found device 1
+  backend = libusb
+  device = 0x01:0x13
+  driver = bladerf
+  instance = 0
+  label = BladeRF #0 [bd7fffbf..d5958b06]
+  serial = bd7fffbf8efb4de4ba08d94bd5958b06
+```
 
 For NB-IoT scanning, you can use the `srslte_npss` option as follows:
 
