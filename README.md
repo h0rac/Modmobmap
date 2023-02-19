@@ -49,16 +49,16 @@ Requirements
 -------------
 
 Here are the following requirements:
-- Python 2 or 3;
+- Python 3;
 - Last Android SDK to run ADB: https://developer.android.com/studio/#downloads;
 - A compatible mobile phone;
-- GNU Radio 3.8 with gr-gsm to scan GSM stations with Software-Defined Radio
+- GNU Radio 3.10 with gr-gsm to scan GSM stations with Software-Defined Radio
 - A valid/invalid SIM card (just in case to provide an IMSI number).
 
 Ubuntu installation
 ---------------------
 
-A `install_all-Ubuntu_20.04.sh` script installing all dependencies for all engines is available in the root directory.
+A `install_all-Ubuntu_22.04.sh` script installing all dependencies for all engines is available in the root directory.
 
 For other distributions, please adapt this script base on listed dependencies.
 
@@ -306,10 +306,10 @@ $ python modmobmap.py -m grgsm -b GSM-R,GSM900
  ARFCN=978
 ```
 
-Using Modmobmap with srsLTE
+Using Modmobmap with srsRAN
 ------------------------------
 
-Modmodmap can be used with `srsLTE` to retrieve LTE cells with a Software-Defined Radio device compatible with UHD, and Soapy drivers like the RTL-SDR.
+Modmodmap can be used with `srsRAN` to retrieve LTE cells with a Software-Defined Radio device compatible with UHD, and Soapy drivers like the RTL-SDR.
 
 Before running the engine, make sure all dependencies are installed. You can refer to the installation script to install all appropriate dependencies. Also make sure that all submodules are pulled from the repository:
 
@@ -320,7 +320,7 @@ git submodule update --init --recursive
 To use this feature, please issue the following command:
 
 ```
-$ sudo python modmobmap.py -m srslte_pss -b 28 -g 'driver=bladerf'                                                                                                           
+$ sudo python modmobmap.py -m srslte_pss -b 28 -g 'soapy:id=1' # you need to precise the driver, and id of the device that way                                                                                                          
 
 [INFO] [UHD] linux; GNU C++ version 9.2.1 20191008; Boost_106700; UHD_4.0.0.0-531-g5fb585c3
 [INFO] [LOGGING] Fastpath logging disabled at runtime.
@@ -363,7 +363,7 @@ The `g` parameters is not mandatory and is used mainly to select the right devic
 For NB-IoT scanning, you can use the `srslte_npss` option as follows:
 
 ```
-$ sudo python modmobmap.py -m srslte_npss -b 20 -g 'driver=bladerf'
+$ sudo python modmobmap.py -m srslte_npss -b 20 -g 'soapy:id=1' # you need to precise the driver, and id of the device that way  
 [INFO] [UHD] linux; GNU C++ version 9.2.1 20191008; Boost_106700; UHD_4.0.0.0-531-g5fb585c3
 [INFO] [LOGGING] Fastpath logging disabled at runtime.
 

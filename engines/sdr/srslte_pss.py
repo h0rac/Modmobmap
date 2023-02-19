@@ -6,6 +6,9 @@
 # <sebastien.dudek(<@T>)penthertz.com> wrote this file. As long as you retain this notice you
 # can do whatever you want with this stuff. If we meet some day, and you think
 # this stuff is worth it, you can buy me a beer in return FlUxIuS ;)
+# 
+# We'd like to thank our contributors for maintening this code:
+# - @h0rac (Grzegorz Wypych) from PWNSec.pl
 # ----------------------------------------------------------------------------
 
 from __future__ import print_function
@@ -47,7 +50,7 @@ class srslte_pss(object):
                                          'type' : "4G",
                                          'band' : "-1",
                                          'eARFCN' : int(tmpcell['DL_EARFCN']),
-                                         'POWER' : tmpcell['POWER'], 
+                                         'POWER' : tmpcell['POWER'].split("\n")[0], 
                                      }
                     self.go2logs(tmpcell2)
 
