@@ -20,10 +20,19 @@ import time
 from threading import Thread
 import argparse
 import json
-
+import signal
 
 kb = mKB()
 
+def signal_handler(sig, frame):
+    global th, state
+    print('Keyboard interrupt received, stopping cellmapping and saving results...')
+    state = False
+    cells = kb.data['SM_cells']
+    saveCells(cells)
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 def statesmv(func, msg=None, wait=10, arg=None):
     if msg is not None:
@@ -111,7 +120,6 @@ def startSrsLTENPSS():
             cells = kb.data['SM_cells']
             saveCells(cells)
 
-import signal 
 def startSrsLTEPSS():
     #global th, state
     th = Thread(target=startSrsLTEPSSProcess)
@@ -127,16 +135,6 @@ def startSrsLTEPSS():
             state = False
             cells = kb.data['SM_cells']
             saveCells(cells)
-
-def signal_handler(sig, frame):
-    global th, state
-    print('Keyboard interrupt received, stopping srsLTE PSS...')
-    state = False
-    cells = kb.data['SM_cells']
-    saveCells(cells)
-    sys.exit(0)
-
-signal.signal(signal.SIGINT, signal_handler)
 
 def startSrsLTEPSSCollect():
     srs = srslte_pss()
@@ -188,8 +186,9 @@ def processOperatorAT(operators):
                         "=> Switching back to auto-mode", arg=2)
         except (KeyboardInterrupt, SystemExit):
             state = False
-            cells = kb.data['SM_cells']
-            saveCells(cells)
+            break
+    cells = kb.data['SM_cells']
+    saveCells(cells)
 
 
 def processOperatorADB(operators):
@@ -211,9 +210,9 @@ def processOperatorADB(operators):
                         "=> Switching back to auto-mode", arg=2)
         except (KeyboardInterrupt, SystemExit):
             state = False
-            kb = mKB()
-            cells = kb.data['SM_cells']
-            saveCells(cells)
+            break
+    cells = kb.data['SM_cells']
+    saveCells(cells)
     process = sm.grablogcat()
 
 
@@ -222,7 +221,10 @@ def scanGRGSM(band):
     def trigfunc(found_list):
         for info in sorted(found_list):
             info.attr2dic() # trigger log 
-    do_scan(2e6, band, 4, 0, 30.0, "id=0", trigfunc, False)
+    device_args = ""
+    if mKB.config['device_args'] is not None:
+        device_args = mKB.config['device_args']
+    do_scan(2e6, band, 4, 0, 30.0, device_args, trigfunc, False)
 
 
 def processGRGSM(bands):
@@ -247,9 +249,10 @@ def processGRGSM(bands):
                         "=> Switching to %s band" % band, arg=band)
         except (KeyboardInterrupt, SystemExit):
             state = False
-            kb = mKB()
-            cells = kb.data['SM_cells']
-            saveCells(cells)
+            break
+    kb = mKB()
+    cells = kb.data['SM_cells']
+    saveCells(cells)
 
 
 def processManualMCCMN(string):

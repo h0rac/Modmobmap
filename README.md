@@ -43,6 +43,7 @@ Modmobmap is also able to scan LTE cells by wrapping srsLTE tools. The engine su
 * BladeRF
 * HackRF
 * RFSpace
+* ANTSDR E200 (with the right UHD installation)
 * and so on.
 
 Requirements
@@ -272,12 +273,20 @@ Note that retrieving results from AT+COPS command could take a lot of time and s
 Using Modmobmap with GRGSM
 ------------------------------
 
+Drivers supported:
+
+* bladerf
+* uhd
+* rtlsdr
+* redpitaya
+* soapy
+
 Modmodmap can be used with `gr-gsm` to retrieve GSM cells' information with a Software-Defined Radio device compatible with OSMOSDR.
 
 To use this feature, please issue the following command:
 
 ```
-$ python modmobmap.py -m grgsm -b GSM-R,GSM900
+$ python modmobmap.py -m grgsm -b GSM-R,GSM900 -g rtlsdr
 => Switching to GSM-R band
 [+] New cell detected [CellID/PCI-DL_freq  (****)]
  Network type=2G
@@ -435,6 +444,8 @@ The process could be stopped at any time when killing the process with a keyboar
 ^C[+] Cells save as cells_1528738901.json
 ```
 
-## Docker image
+## Docker image (in case of Apocalypse)
 
-To avoid any issue installing the whole project, we have also a Docker container available at this address: https://hub.docker.com/r/penthertz/modmobmap-beta
+To avoid any issue installing the whole project, we have also a Docker container available at this address: https://hub.docker.com/r/penthertz/modmobmap
+
+You can now use the `latest_with_e200` tag which is compatible with the ANTSDR E200.
